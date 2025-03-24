@@ -19,8 +19,10 @@ function loadData() {
             renderSkills(portfolioData.skills);
             renderCompletedTasks(portfolioData);
             renderAbout(portfolioData);
-            // Активировать анимацию для элементов, которые видны при загрузке
+            // Мгновенно проверяем видимость
             checkFadeElements();
+            // И еще раз через небольшую задержку для надежности
+            setTimeout(checkFadeElements, 50);
         } else {
             console.error('Ошибка: данные портфолио не найдены.');
             document.getElementById('portfolioGrid').innerHTML = '<p>Не удалось загрузить портфолио.</p>';
@@ -82,7 +84,7 @@ function renderSkills(skills) {
     
     skills.forEach((skill, index) => {
         skillsHTML += `
-            <div class="skills__item fade-in" style="transition-delay: ${index * 0.1}s;">
+            <div class="skills__item fade-in" style="transition-delay: ${index * 0.03}s;">
                 ${skill}
             </div>
         `;
@@ -107,7 +109,7 @@ function renderPortfolio(portfolioItems) {
             : 'https://via.placeholder.com/300x200?text=Нет+изображения';
         
         // Добавляем задержку анимации в зависимости от индекса
-        const delay = index * 0.1;
+        const delay = index * 0.03;
         
         portfolioHTML += `
             <div class="portfolio__item" style="transition-delay: ${delay}s;">
@@ -152,7 +154,7 @@ function renderTestimonials(testimonialItems) {
                           '☆'.repeat(5 - Math.ceil(item.score));
         
         // Добавляем задержку анимации в зависимости от индекса
-        const delay = index * 0.1;
+        const delay = index * 0.03;
         
         testimonialsHTML += `
             <div class="testimonial__item" style="transition-delay: ${delay}s;">
@@ -180,7 +182,7 @@ function renderCompletedTasks(data) {
         const formattedDate = date.toLocaleDateString('ru-RU');
         
         // Добавляем задержку анимации в зависимости от индекса
-        const delay = index * 0.05;
+        const delay = index * 0.02;
         
         tasksHTML += `
             <div class="completed-task__item fade-in" style="transition-delay: ${delay}s;">
@@ -205,10 +207,11 @@ function checkFadeElements() {
     const fadeElements = document.querySelectorAll('.fade-in, .portfolio__item, .testimonial__item, .skills__item, .contacts__item');
     
     fadeElements.forEach(element => {
+        // Увеличиваем зону видимости, чтобы элементы появлялись раньше
         const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
+        const elementVisible = window.innerHeight; // Было 150, теперь во весь экран
         
-        if (elementTop < window.innerHeight - elementVisible) {
+        if (elementTop < elementVisible) {
             element.classList.add('visible');
         }
     });
