@@ -93,8 +93,13 @@ function renderPortfolio(portfolioItems) {
     const portfolioContainer = document.getElementById('portfolioGrid');
     if (!portfolioContainer || !portfolioItems) return;
     
-    // Отображаем только первые 12 проектов
-    const displayItems = portfolioItems.slice(0, 999);
+    // Сортируем портфолио по дате (от новых к старым)
+    const sortedItems = [...portfolioItems].sort((a, b) => {
+        return b.created_at - a.created_at;
+    });
+    
+    // Отображаем все проекты
+    const displayItems = sortedItems.slice(0, 999);
     
     let portfolioHTML = '';
     
@@ -104,7 +109,7 @@ function renderPortfolio(portfolioItems) {
             : 'https://via.placeholder.com/300x200?text=Нет+изображения';
         
         portfolioHTML += `
-            <div class="portfolio__item">
+            <div class="portfolio__item visible">
                 <img src="${imageUrl}" alt="${item.title}" class="portfolio__image">
                 <div class="portfolio__content">
                     <h3 class="portfolio__title">${item.title}</h3>
@@ -130,14 +135,15 @@ function renderTestimonials(testimonialItems) {
     const testimonialsContainer = document.getElementById('testimonialsSlider');
     if (!testimonialsContainer || !testimonialItems) return;
     
-    // Берем только первые 6 отзывов с комментариями
-    const filteredItems = testimonialItems
+    // Сортируем отзывы по дате (от новых к старым)
+    const sortedItems = [...testimonialItems]
         .filter(item => item.comment !== null)
+        .sort((a, b) => b.created_at - a.created_at)
         .slice(0, 9999);
     
     let testimonialsHTML = '';
     
-    filteredItems.forEach((item) => {
+    sortedItems.forEach((item) => {
         const date = new Date(item.created_at * 1000);
         const formattedDate = date.toLocaleDateString('ru-RU');
         
@@ -146,7 +152,7 @@ function renderTestimonials(testimonialItems) {
                           '☆'.repeat(5 - Math.ceil(item.score));
         
         testimonialsHTML += `
-            <div class="testimonial__item">
+            <div class="testimonial__item visible">
                 <div class="testimonial__text">${item.comment || 'Без комментариев'}</div>
                 <div class="testimonial__date">${formattedDate}</div>
                 <div class="testimonial__rating">${ratingStars} (${item.score})</div>
@@ -162,11 +168,14 @@ function renderCompletedTasks(data) {
     const completedTasksContainer = document.getElementById('completedTasksList');
     if (!completedTasksContainer || !data.performer || !data.performer.completed_tasks || !data.performer.completed_tasks.items) return;
     
-    const tasksItems = data.performer.completed_tasks.items;
+    // Сортируем проекты по дате (от новых к старым)
+    const tasksItems = [...data.performer.completed_tasks.items].sort((a, b) => {
+        return b.created_at - a.created_at;
+    });
+    
     let tasksHTML = '';
     
     tasksItems.forEach((task) => {
-        // Форматирование даты
         const date = new Date(task.created_at * 1000);
         const formattedDate = date.toLocaleDateString('ru-RU');
         
