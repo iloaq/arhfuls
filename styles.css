@@ -1,21 +1,23 @@
 /* Глобальные стили и переменные */
 :root {
     /* Темная тема (по умолчанию) */
-    --primary-color: #6c8dff;
-    --secondary-color: #1e2130;
-    --accent-color: #8a6cff;
-    --text-color: #e0e0e0;
-    --text-light: #a0a0a0;
-    --border-color: #3a3f50;
-    --bg-light: #2a2d3e;
-    --bg-main: #181a25;
-    --shadow: 0 8px 30px rgba(0,0,0,0.2);
-    --card-bg: #252836;
-    --gradient-primary: linear-gradient(135deg, #6c8dff, #8a6cff);
-    --gradient-accent: linear-gradient(135deg, #5c7dff, #7a5cff);
-    --highlight: rgba(108, 141, 255, 0.15);
-    --skill-bg: #252836;
-    --skill-color: #6c8dff;
+    --primary-color: #6366f1;
+    --secondary-color: #1e1b4b;
+    --accent-color: #818cf8;
+    --text-color: #f1f5f9;
+    --text-light: #94a3b8;
+    --border-color: #334155;
+    --bg-light: #0f172a;
+    --bg-main: #020617;
+    --shadow: 0 8px 30px rgba(99, 102, 241, 0.2);
+    --card-bg: #1e1b4b;
+    --gradient-primary: linear-gradient(135deg, #6366f1, #818cf8);
+    --gradient-accent: linear-gradient(135deg, #4f46e5, #6366f1);
+    --highlight: rgba(99, 102, 241, 0.15);
+    --skill-bg: #1e1b4b;
+    --skill-color: #818cf8;
+    --glass-bg: rgba(99, 102, 241, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 /* Светлая тема */
@@ -442,38 +444,28 @@ a:hover {
 }
 
 .skills__item {
-    background: var(--skill-bg);
-    padding: 12px 25px;
-    border-radius: 30px;
-    box-shadow: var(--shadow);
-    font-weight: 500;
-    color: var(--skill-color);
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
+    background: var(--glass-bg);
+    border: none;
+    z-index: 1;
 }
 
-.skills__item:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    color: white;
-}
-
-.skills__item:before {
+.skills__item::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background-image: var(--gradient-primary);
-    transition: width 0.3s ease;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--gradient-primary);
     z-index: -1;
+    border-radius: 31px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.skills__item:hover:before {
-    width: 100%;
+.skills__item:hover::before {
+    opacity: 1;
 }
 
 /* Портфолио */
@@ -497,7 +489,9 @@ a:hover {
     box-shadow: var(--shadow);
     transition: all 0.5s ease;
     position: relative;
-    background: var(--card-bg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
     transform-style: preserve-3d;
     perspective: 1000px;
 }
@@ -505,6 +499,7 @@ a:hover {
 .portfolio__item:hover {
     transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
 }
 
 .portfolio__image {
@@ -589,10 +584,12 @@ a:hover {
 }
 
 .completed-task__item {
-    background: var(--card-bg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     border-radius: 15px;
     padding: 30px;
-    box-shadow: var(--shadow);
     transition: all 0.4s ease;
     opacity: 0;
     transform: translateY(30px);
@@ -603,6 +600,7 @@ a:hover {
 .completed-task__item:hover {
     transform: translateY(-10px) scale(1.02);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
 }
 
 .completed-task__item:before {
@@ -761,10 +759,12 @@ a:hover {
 }
 
 .testimonial__item {
-    background: var(--card-bg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     padding: 35px;
     border-radius: 15px;
-    box-shadow: var(--shadow);
     flex: 1 1 calc(50% - 20px);
     min-width: 300px;
     transition: all 0.5s ease;
@@ -776,6 +776,7 @@ a:hover {
 .testimonial__item:hover {
     transform: translateY(-10px) rotateX(3deg);
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
 }
 
 .testimonial__item:before {
@@ -876,10 +877,12 @@ a:hover {
 }
 
 .contacts__item {
-    background: var(--card-bg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     padding: 30px;
     border-radius: 15px;
-    box-shadow: var(--shadow);
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
@@ -888,6 +891,7 @@ a:hover {
 .contacts__item:hover {
     transform: translateY(-10px) scale(1.03);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
 }
 
 .contacts__item:before {
