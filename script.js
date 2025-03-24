@@ -171,7 +171,7 @@ function renderCompletedTasks(data) {
         const formattedDate = date.toLocaleDateString('ru-RU');
         
         tasksHTML += `
-            <div class="completed-task__item">
+            <div class="completed-task__item visible">
                 <div class="completed-task__header">
                     <h3 class="completed-task__title">${task.title}</h3>
                     <div class="completed-task__date">${formattedDate}</div>
