@@ -19,10 +19,8 @@ function loadData() {
             renderSkills(portfolioData.skills);
             renderCompletedTasks(portfolioData);
             renderAbout(portfolioData);
-            // Мгновенно проверяем видимость
+            // Мгновенно показываем все элементы
             checkFadeElements();
-            // И еще раз через небольшую задержку для надежности
-            setTimeout(checkFadeElements, 50);
         } else {
             console.error('Ошибка: данные портфолио не найдены.');
             document.getElementById('portfolioGrid').innerHTML = '<p>Не удалось загрузить портфолио.</p>';
@@ -37,9 +35,6 @@ function loadData() {
         document.getElementById('completedTasksList').innerHTML = '<p>Не удалось загрузить выполненные проекты.</p>';
     };
     document.head.appendChild(script);
-    
-    // Активация анимации при загрузке страницы
-    setTimeout(checkFadeElements, 100);
 }
 
 // Функция для отображения информации о пользователе
@@ -82,9 +77,9 @@ function renderSkills(skills) {
     
     let skillsHTML = '';
     
-    skills.forEach((skill, index) => {
+    skills.forEach((skill) => {
         skillsHTML += `
-            <div class="skills__item fade-in" style="transition-delay: ${index * 0.03}s;">
+            <div class="skills__item fade-in">
                 ${skill}
             </div>
         `;
@@ -103,16 +98,13 @@ function renderPortfolio(portfolioItems) {
     
     let portfolioHTML = '';
     
-    displayItems.forEach((item, index) => {
+    displayItems.forEach((item) => {
         const imageUrl = item.images && item.images.length > 0 
             ? item.images[0] 
             : 'https://via.placeholder.com/300x200?text=Нет+изображения';
         
-        // Добавляем задержку анимации в зависимости от индекса
-        const delay = index * 0.03;
-        
         portfolioHTML += `
-            <div class="portfolio__item" style="transition-delay: ${delay}s;">
+            <div class="portfolio__item">
                 <img src="${imageUrl}" alt="${item.title}" class="portfolio__image">
                 <div class="portfolio__content">
                     <h3 class="portfolio__title">${item.title}</h3>
@@ -145,7 +137,7 @@ function renderTestimonials(testimonialItems) {
     
     let testimonialsHTML = '';
     
-    filteredItems.forEach((item, index) => {
+    filteredItems.forEach((item) => {
         const date = new Date(item.created_at * 1000);
         const formattedDate = date.toLocaleDateString('ru-RU');
         
@@ -153,11 +145,8 @@ function renderTestimonials(testimonialItems) {
                           (item.score % 1 > 0 ? '½' : '') + 
                           '☆'.repeat(5 - Math.ceil(item.score));
         
-        // Добавляем задержку анимации в зависимости от индекса
-        const delay = index * 0.03;
-        
         testimonialsHTML += `
-            <div class="testimonial__item" style="transition-delay: ${delay}s;">
+            <div class="testimonial__item">
                 <div class="testimonial__text">${item.comment || 'Без комментариев'}</div>
                 <div class="testimonial__date">${formattedDate}</div>
                 <div class="testimonial__rating">${ratingStars} (${item.score})</div>
@@ -176,16 +165,13 @@ function renderCompletedTasks(data) {
     const tasksItems = data.performer.completed_tasks.items;
     let tasksHTML = '';
     
-    tasksItems.forEach((task, index) => {
+    tasksItems.forEach((task) => {
         // Форматирование даты
         const date = new Date(task.created_at * 1000);
         const formattedDate = date.toLocaleDateString('ru-RU');
         
-        // Добавляем задержку анимации в зависимости от индекса
-        const delay = index * 0.02;
-        
         tasksHTML += `
-            <div class="completed-task__item fade-in" style="transition-delay: ${delay}s;">
+            <div class="completed-task__item">
                 <div class="completed-task__header">
                     <h3 class="completed-task__title">${task.title}</h3>
                     <div class="completed-task__date">${formattedDate}</div>
@@ -205,20 +191,18 @@ function renderCompletedTasks(data) {
 // Функция для проверки и активации анимаций для элементов
 function checkFadeElements() {
     const fadeElements = document.querySelectorAll('.fade-in, .portfolio__item, .testimonial__item, .skills__item, .contacts__item');
-    
     fadeElements.forEach(element => {
-        // Увеличиваем зону видимости, чтобы элементы появлялись раньше
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = window.innerHeight; // Было 150, теперь во весь экран
-        
-        if (elementTop < elementVisible) {
-            element.classList.add('visible');
-        }
+        element.classList.add('visible');
     });
 }
 
-// Анимация элементов при прокрутке страницы
-window.addEventListener('scroll', checkFadeElements);
+// Упрощаем функцию проверки видимости
+function checkFadeElements() {
+    const fadeElements = document.querySelectorAll('.fade-in, .portfolio__item, .testimonial__item, .skills__item, .contacts__item');
+    fadeElements.forEach(element => {
+        element.classList.add('visible');
+    });
+}
 
 // Начальная активация анимации для видимых элементов
 window.addEventListener('load', function() {
