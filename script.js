@@ -88,7 +88,7 @@ function renderSkills(skills) {
     skillsContainer.innerHTML = skillsHTML;
 }
 
-// Функция для отображения портфолио с ограничением
+// Функция для отображения портфолио
 function renderPortfolio(portfolioItems) {
     const portfolioContainer = document.getElementById('portfolioGrid');
     if (!portfolioContainer || !portfolioItems) return;
@@ -96,8 +96,8 @@ function renderPortfolio(portfolioItems) {
     const ITEMS_PER_PAGE = 6;
     let currentlyShown = ITEMS_PER_PAGE;
     
-    // Сортируем портфолио по дате
-    const sortedItems = [...portfolioItems].sort((a, b) => b.created_at - a.created_at);
+    // Просто переворачиваем массив
+    const sortedItems = [...portfolioItems].reverse();
     
     function renderItems(items) {
         let portfolioHTML = '';
@@ -117,7 +117,8 @@ function renderPortfolio(portfolioItems) {
             `;
         });
         
-        if (sortedItems.length > ITEMS_PER_PAGE) {
+        // Добавляем кнопку "Показать ещё" если есть скрытые элементы
+        if (sortedItems.length > currentlyShown) {
             portfolioHTML += `
                 <div class="show-more-container">
                     <button class="show-more-btn" id="showMorePortfolio">
@@ -129,15 +130,12 @@ function renderPortfolio(portfolioItems) {
         
         portfolioContainer.innerHTML = portfolioHTML;
         
-        // Добавляем обработчик для кнопки
+        // Обработчик для кнопки "Показать ещё"
         const showMoreBtn = document.getElementById('showMorePortfolio');
         if (showMoreBtn) {
             showMoreBtn.addEventListener('click', () => {
                 currentlyShown += ITEMS_PER_PAGE;
                 renderItems(sortedItems.slice(0, currentlyShown));
-                if (currentlyShown >= sortedItems.length) {
-                    showMoreBtn.style.display = 'none';
-                }
             });
         }
     }
@@ -161,32 +159,21 @@ function renderTestimonials(testimonialItems) {
     const ITEMS_PER_PAGE = 6;
     let currentlyShown = ITEMS_PER_PAGE;
     
-    // Сортируем отзывы по дате (от новых к старым)
-    const sortedItems = [...testimonialItems]
-        .filter(item => item.comment !== null)
-        .sort((a, b) => b.created_at - a.created_at)
-        .slice(0, 9999);
+    // Переворачиваем массив отзывов
+    const sortedItems = [...testimonialItems].reverse();
     
     function renderItems(items) {
         let testimonialsHTML = '';
         items.forEach((item) => {
-            const date = new Date(item.created_at * 1000);
-            const formattedDate = date.toLocaleDateString('ru-RU');
-            
-            const ratingStars = '★'.repeat(Math.floor(item.score)) + 
-                              (item.score % 1 > 0 ? '½' : '') + 
-                              '☆'.repeat(5 - Math.ceil(item.score));
-            
             testimonialsHTML += `
                 <div class="testimonial__item visible">
                     <div class="testimonial__text">${item.comment || 'Без комментариев'}</div>
-                    <div class="testimonial__date">${formattedDate}</div>
-                    <div class="testimonial__rating">${ratingStars} (${item.score})</div>
+                    <div class="testimonial__rating">${'★'.repeat(Math.floor(item.score))}${item.score % 1 > 0 ? '½' : ''}${'☆'.repeat(5 - Math.ceil(item.score))} (${item.score})</div>
                 </div>
             `;
         });
         
-        if (sortedItems.length > ITEMS_PER_PAGE) {
+        if (sortedItems.length > currentlyShown) {
             testimonialsHTML += `
                 <div class="show-more-container">
                     <button class="show-more-btn" id="showMoreTestimonials">
@@ -198,15 +185,11 @@ function renderTestimonials(testimonialItems) {
         
         testimonialsContainer.innerHTML = testimonialsHTML;
         
-        // Добавляем обработчик для кнопки
         const showMoreBtn = document.getElementById('showMoreTestimonials');
         if (showMoreBtn) {
             showMoreBtn.addEventListener('click', () => {
                 currentlyShown += ITEMS_PER_PAGE;
                 renderItems(sortedItems.slice(0, currentlyShown));
-                if (currentlyShown >= sortedItems.length) {
-                    showMoreBtn.style.display = 'none';
-                }
             });
         }
     }
@@ -222,36 +205,42 @@ function renderCompletedTasks(data) {
     const ITEMS_PER_PAGE = 6;
     let currentlyShown = ITEMS_PER_PAGE;
     
-    // Сортируем проекты по дате (от новых к старым)
-    const tasksItems = [...data.performer.completed_tasks.items].sort((a, b) => {
-        return b.created_at - a.created_at;
-    });
+    // Переворачиваем массив проектов
+    const tasksItems = [...data.performer.completed_tasks.items].reverse();
     
     function renderItems(items) {
         let tasksHTML = '';
         items.forEach((task) => {
-            const date = new Date(task.created_at * 1000);
-            const formattedDate = date.toLocaleDateString('ru-RU');
-            
+            // Преобразуем строку навыков в массив и создаем HTML для каждого навыка
+            const skillsArray = task.skills.split(',').map(skill => skill.trim());
+            const skillsHTML = skillsArray
+                .map(skill => `<span class="completed-task__skill">${skill}</span>`)
+                .join('');
+
             tasksHTML += `
                 <div class="completed-task__item visible">
                     <div class="completed-task__header">
                         <h3 class="completed-task__title">${task.title}</h3>
-                        <div class="completed-task__date">${formattedDate}</div>
                     </div>
-                    <div class="completed-task__description">${task.description}</div>
+                    <div class="completed-task__description">
+                        ${task.description}
+                    </div>
                     <div class="completed-task__footer">
-                        <div class="completed-task__skills">${task.skills}</div>
-                        <div class="completed-task__price">${task.price}</div>
+                        <div class="completed-task__skills">
+                            ${skillsHTML}
+                        </div>
+                        <div class="completed-task__price">
+                            ${task.price} ₽
+                        </div>
                     </div>
                 </div>
             `;
         });
         
-        if (tasksItems.length > ITEMS_PER_PAGE) {
+        if (tasksItems.length > currentlyShown) {
             tasksHTML += `
                 <div class="show-more-container">
-                    <button class="show-more-btn" id="showMoreCompletedTasks">
+                    <button class="show-more-btn" id="showMoreTasks">
                         Показать ещё (${tasksItems.length - currentlyShown})
                     </button>
                 </div>
@@ -260,15 +249,11 @@ function renderCompletedTasks(data) {
         
         completedTasksContainer.innerHTML = tasksHTML;
         
-        // Добавляем обработчик для кнопки
-        const showMoreBtn = document.getElementById('showMoreCompletedTasks');
+        const showMoreBtn = document.getElementById('showMoreTasks');
         if (showMoreBtn) {
             showMoreBtn.addEventListener('click', () => {
                 currentlyShown += ITEMS_PER_PAGE;
                 renderItems(tasksItems.slice(0, currentlyShown));
-                if (currentlyShown >= tasksItems.length) {
-                    showMoreBtn.style.display = 'none';
-                }
             });
         }
     }
