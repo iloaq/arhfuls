@@ -207,5 +207,5 @@ function checkFadeElements() {
 // Начальная активация анимации для видимых элементов
 window.addEventListener('load', function() {
     // Активируем анимацию для элементов, видимых при загрузке страницы
-    setTimeout(checkFadeElements, 100);
+    setTimeout(checkFadeElements, 1);
 }); 
